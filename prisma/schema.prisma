@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "mongodb"
+    url       = env("DATABASE_URL")
+    directUrl = env("DATABASE_URL")
+}
+
+model User {
+    id             String    @id @default(auto()) @map("_id") @db.ObjectId
+    name           String?
+    email          String?   @unique
+    emailVerified  DateTime?
+    image          String?
+    hashedPassword String?
+    createdAt      DateTime  @default(now())
+    updatedAt      DateTime  @updatedAt
+    favoriteIds    String[]  @db.ObjectId
+
+    accounts     Account[]
+
+    resumes Resume[]
+    workHistories WorkHistory[]
+    projectList Project[]
+    education Education[]
+
+    listings     Listing[]
+    reservations Reservation[]
+}
+
+model Account {
+    id                String  @id @default(auto()) @map("_id") @db.ObjectId
+    userId            String  @db.ObjectId
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.String
+    access_token      String? @db.String
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.String
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
+model Listing {
+    id            String   @id @default(auto()) @map("_id") @db.ObjectId
+    title         String
+    description   String
+    imageSrc      String
+    createdAt     DateTime @default(now())
+    category      String
+    roomCount     Int
+    bathroomCount Int
+    guestCount    Int
+    locationValue String
+    userId        String   @db.ObjectId
+    price         Int
+
+    user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    reservations Reservation[]
+}
+
+model Reservation {
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    userId     String   @db.ObjectId
+    listingId  String   @db.ObjectId
+    startDate  DateTime
+    endDate    DateTime
+    totalPrice Int
+    createdAt  DateTime @default(now())
+
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
+
+model WorkHistory {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    userId String @db.ObjectId
+    resumeId String @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    companyName String
+    industry String?
+    department String
+    position String
+    startAndEndDate DateTime[]
+    workContent String
+    workAchievements String?
+    workSkills String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    userId String @db.ObjectId
+    resumeId String @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    projectName String
+    role String
+    projectLink String?
+    projectStartTime DateTime[]
+    projectDescription String
+    projectResult String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+}
+
+model Education {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    userId String @db.ObjectId
+    resumeId String @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    schoolName String
+    educationalSystem String
+    degree String
+    period DateTime[]
+    major String
+    educationExperience String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+}
+
+model Resume {
+    id  String @id @default(auto()) @map("_id") @db.ObjectId
+    userId String @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name String
+    gender String
+    birth DateTime
+    degree String
+    careerStartDate DateTime[]
+    email String?
+    jobStatus String
+    phone String
+    weChatAccount String
+
+    positionType String
+    position String
+    salaryExpectation Int
+    workingCity String
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    workHistory WorkHistory[]
+    projectList Project[]
+    education Education[]
+}

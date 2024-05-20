@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@import url('@/styles/themes/css/index.css');
+@import url('@/styles/ui/scrollbar.css');
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.quill {
+    height: fit-content;
+}
+
+.small-editor.quill .ql-container {
+    min-height: 248px !important;
+    max-height: 500px !important;
+}
+
+.resume ul, .resume ol {
+    padding-left: 40px;
+}
+
+.resume ul {
+    list-style: initial;
+}
+
+.resume ol {
+    list-style: decimal;
+}
+
+.resume-scroll-area > div[data-radix-scroll-area-viewport] > div {
+    display: block !important;
+}

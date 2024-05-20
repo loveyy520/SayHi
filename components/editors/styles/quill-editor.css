@@ -1,0 +1,26 @@
+.ql-toolbar.ql-snow {
+	border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;
+	background-color: hsl(var(--primary) / 0.3);
+}
+
+/* toolbar svg-stroke */
+.ql-snow .ql-stroke {
+	stroke: hsl(var(--foreground));
+}
+.ql-snow .ql-fill,
+.ql-snow .ql-stroke.ql-fill {
+	fill: hsl(var(--foreground));
+}
+
+.ql-picker-label::before {
+	color: hsl(var(--foreground));
+}
+
+.ql-snow.ql-toolbar button:hover {
+	color: hsl(var(--primary));
+}
+
+.ql-container.ql-snow {
+	border-radius: 0 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px);
+	background-color: hsl(var(--primary) / 0.05);
+}
